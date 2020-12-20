@@ -190,7 +190,7 @@ type Order struct {
 }
 ```
 
-为了实现GORM数据结构，我们可以添加关于外键的定义,按照需求,一个订单有多条记录，添加注解`gorm:foreignkey:ID`到`Order`下的`Items`,这将以为着`Item`表中的`ID`列外键形式参考的为`Order`表的`ID`，详细请[参考GORM](https://gorm.io/docs/has_many.html)
+为了实现GORM数据结构，我们可以添加关于外键的定义,按照需求,一个订单有多条记录，添加注解`gorm:foreignkey:OrderID`到`Order`下的`Items`,这将以为着`Item`表中的`OrderID`列外键形式参考的为`Order`表的`ID`，详细请[参考GORM](https://gorm.io/docs/has_many.html)
 
 ```go
 package model
@@ -225,15 +225,18 @@ type Item struct {
 	ProductCode string `json:"productCode"`
 	ProductName string `json:"productName"`
 	Quantity    int    `json:"quantity"`
+    OrderID		uint	`json:"-"`
 }
 
 type Order struct {
 	ID           int  `json:"id"`
 	CustomerName string  `json:"customerName"`
 	OrderAmount  float64 `json:"orderAmount"`
-    Items        []*Item `json:"items" gorm:"foreignkey:ID"`
+    Items        []*Item `json:"items" gorm:"foreignkey:OrderID"`
 }
 ```
+
+> **特别注意**，GORM反映外键关系，首先需要在从表中添加一列，上面的例子中`Items`结构体中我们**添加了`OrderID` 新属性**而注解 **json:"-"**代表在查询中此属性将被JSON序列化时忽略，而在 `Order`中关于 `Items`属性的注解中我们额外添加了 **`gorm:"foreignkey:OrderID`**，这将告知GORM转化成数据库的表形态时，一对多关系中，order 表中的主键将成为 items 表中的外键参考，更多请参考[官方GORM has-many](https://gorm.io/docs/has_many.html)
 
 
 
