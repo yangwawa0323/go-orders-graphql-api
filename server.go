@@ -30,8 +30,8 @@ func initDB() {
 	db.LogMode(true)
 	// Create the database. This is a one-time step.
 	// Comment out if running multiple times - You may see an error otherwise
-	db.Exec("CREATE DATABASE IF NOT EXISTS test_db2")
-	db.Exec("USE test_db2")
+	db.Exec("CREATE DATABASE IF NOT EXISTS test_db3")
+	db.Exec("USE test_db3")
 	// Migration to create tables for Order and Item schema
 	db.AutoMigrate(&model.Order{}, &model.Item{})
 }

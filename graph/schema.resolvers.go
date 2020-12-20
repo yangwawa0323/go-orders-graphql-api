@@ -10,17 +10,6 @@ import (
 	"github.com/yangwawa0323/go-orders-graphql-api/graph/model"
 )
 
-func mapItemsFromInput(itemsInput []*model.ItemInput) []*model.Item {
-	var items []*model.Item
-	for _, itemInput := range itemsInput {
-		items = append(items, &model.Item{
-			ProductCode: itemInput.ProductCode,
-			ProductName: itemInput.ProductName,
-			Quantity:    itemInput.Quantity,
-		})
-	}
-	return items
-}
 
 func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInput) (*model.Order, error) {
 	// panic(fmt.Errorf("not implemented"))
@@ -77,3 +66,17 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+
+
+func mapItemsFromInput(itemsInput []*model.ItemInput) []*model.Item {
+	var items []*model.Item
+	for _, itemInput := range itemsInput {
+		items = append(items, &model.Item{
+			ProductCode: itemInput.ProductCode,
+			ProductName: itemInput.ProductName,
+			Quantity:    itemInput.Quantity,
+		})
+	}
+	return items
+}

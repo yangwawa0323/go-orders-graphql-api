@@ -12,7 +12,7 @@ type Order struct {
 	ID           int     `json:"id"`
 	CustomerName string  `json:"customerName"`
 	OrderAmount  float64 `json:"orderAmount"`
-	Items        []*Item `json:"items"`
+	Items        []*Item `json:"items" gorm:"foreignkey:OrderID`
 }
 
 type OrderInput struct {
