@@ -10,7 +10,6 @@ import (
 	"github.com/yangwawa0323/go-orders-graphql-api/graph/model"
 )
 
-
 func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInput) (*model.Order, error) {
 	// panic(fmt.Errorf("not implemented"))
 	order := model.Order{
@@ -18,6 +17,7 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input model.OrderInp
 		OrderAmount:  input.OrderAmount,
 		Items:        mapItemsFromInput(input.Items),
 	}
+
 	err := r.DB.Create(&order).Error
 	if err != nil {
 		return nil, err
@@ -50,8 +50,8 @@ func (r *mutationResolver) DeleteOrder(ctx context.Context, orderID int) (bool, 
 func (r *queryResolver) Orders(ctx context.Context) ([]*model.Order, error) {
 	// panic(fmt.Errorf("not implemented"))
 	var orders []*model.Order
-	// err := r.DB.Preload("Items").Find(&orders).Error
-	err := r.DB.Set("gorm:auto_preload", true).Find(&orders).Error
+	err := r.DB.Preload("Items").Find(&orders).Error
+	// err := r.DB.Set("gorm:auto_preload", true).Find(&orders).Error
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,14 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 
-
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+type itemResolver struct{ *Resolver }
+type orderResolver struct{ *Resolver }
 
 func mapItemsFromInput(itemsInput []*model.ItemInput) []*model.Item {
 	var items []*model.Item

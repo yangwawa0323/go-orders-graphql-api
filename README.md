@@ -62,7 +62,7 @@ type Query {
 1. 首先需要获得`gqlgen`以及数据库开发所需的`gorm`工具库
 
 ```shell
-shell$ go get -u github.com/jinzhu/gorm
+shell$ go get -u gorm.io/gorm
 shell$ go get -u github.com/go-sql-driver/mysql
 shell$ go get github.com/99designs/gqlgen
 ```
@@ -246,7 +246,7 @@ type Order struct {
 
 ```go
 // In resolver.go
-import "github.com/jinzhu/gorm"
+import "gorm.io/gorm"
 ```
 
 > 注意：案例中代码使用到的非`grom.io/grom`,而是`github.com`下的。请保持一致，**混杂使用两种库，一定会出现看上去切片指针一样，而在使用中总是报错的现象**
@@ -275,7 +275,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 	"github.com/soberkoder/go-orders-graphql-api/graph"
 	"github.com/soberkoder/go-orders-graphql-api/graph/generated"
 	"github.com/soberkoder/go-orders-graphql-api/graph/model"
