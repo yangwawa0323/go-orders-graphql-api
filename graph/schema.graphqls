@@ -19,6 +19,7 @@ input OrderInput {
 }
 
 input ItemInput {
+    id: Int
     productCode: String!
     productName: String!
     quantity: Int!

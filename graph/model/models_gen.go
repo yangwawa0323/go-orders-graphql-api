@@ -3,6 +3,7 @@
 package model
 
 type ItemInput struct {
+	ID          *int   `json:"id"`
 	ProductCode string `json:"productCode"`
 	ProductName string `json:"productName"`
 	Quantity    int    `json:"quantity"`

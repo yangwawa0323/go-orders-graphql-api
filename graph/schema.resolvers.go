@@ -33,10 +33,11 @@ func (r *mutationResolver) UpdateOrder(ctx context.Context, orderID int, input m
 		OrderAmount:  input.OrderAmount,
 		Items:        mapItemsFromInput(input.Items),
 	}
-	err := r.DB.Save(&updatedOrder).Error
+	err := r.DB.Save(&updatedOrder).Error //.Save(&updatedOrder.Items).Error
 	if err != nil {
 		return nil, err
 	}
+	r.DB.Save(&updatedOrder.Items)
 	return &updatedOrder, nil
 }
 
@@ -79,11 +80,20 @@ type orderResolver struct{ *Resolver }
 func mapItemsFromInput(itemsInput []*model.ItemInput) []*model.Item {
 	var items []*model.Item
 	for _, itemInput := range itemsInput {
-		items = append(items, &model.Item{
-			ProductCode: itemInput.ProductCode,
-			ProductName: itemInput.ProductName,
-			Quantity:    itemInput.Quantity,
-		})
+		if itemInput.ID == nil {
+			items = append(items, &model.Item{
+				ProductCode: itemInput.ProductCode,
+				ProductName: itemInput.ProductName,
+				Quantity:    itemInput.Quantity,
+			})
+		} else {
+			items = append(items, &model.Item{
+				ID:          *itemInput.ID,
+				ProductCode: itemInput.ProductCode,
+				ProductName: itemInput.ProductName,
+				Quantity:    itemInput.Quantity,
+			})
+		}
 	}
 	return items
 }
