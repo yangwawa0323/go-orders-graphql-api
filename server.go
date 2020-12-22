@@ -4,14 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-gonic/gin"
 
 	// _ "github.com/go-sql-driver/mysql"
 
-	"github.com/yangwawa0323/go-orders-graphql-api/graph"
-	"github.com/yangwawa0323/go-orders-graphql-api/graph/generated"
+	"github.com/yangwawa0323/go-orders-graphql-api/graph/handlers"
 	"github.com/yangwawa0323/go-orders-graphql-api/graph/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -43,26 +40,26 @@ func initDB() *gorm.DB {
 }
 
 // Defining the Graphql handler
-func graphqlHandler() gin.HandlerFunc {
-	// NewExecutableSchema and Config are in the generated.go file
-	// Resolver is in the resolver.go file
-	h := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
-		DB: db,
-	}}))
+// func graphqlHandler() gin.HandlerFunc {
+// 	// NewExecutableSchema and Config are in the generated.go file
+// 	// Resolver is in the resolver.go file
+// 	h := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
+// 		DB: db,
+// 	}}))
 
-	return func(c *gin.Context) {
-		h.ServeHTTP(c.Writer, c.Request)
-	}
-}
+// 	return func(c *gin.Context) {
+// 		h.ServeHTTP(c.Writer, c.Request)
+// 	}
+// }
 
-// Defining the Playground handler
-func playgroundHandler() gin.HandlerFunc {
-	h := playground.Handler("GraphQL", "/query")
+// // Defining the Playground handler
+// func playgroundHandler() gin.HandlerFunc {
+// 	h := playground.Handler("GraphQL", "/query")
 
-	return func(c *gin.Context) {
-		h.ServeHTTP(c.Writer, c.Request)
-	}
-}
+// 	return func(c *gin.Context) {
+// 		h.ServeHTTP(c.Writer, c.Request)
+// 	}
+// }
 
 func main() {
 	port := os.Getenv("PORT")
@@ -85,7 +82,7 @@ func main() {
 	// // router.Run(":" + defaultPort)
 
 	r := gin.Default()
-	r.POST("/query", graphqlHandler())
-	r.GET("/", playgroundHandler())
+	r.POST("/query", handlers.GraphqlHandler(db))
+	r.GET("/", handlers.PlaygroundHandler())
 	r.Run(":" + defaultPort)
 }
