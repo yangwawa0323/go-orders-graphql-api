@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
 	"os"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/gin-gonic/gin"
 
 	// _ "github.com/go-sql-driver/mysql"
+
 	"github.com/yangwawa0323/go-orders-graphql-api/graph"
 	"github.com/yangwawa0323/go-orders-graphql-api/graph/generated"
 	"github.com/yangwawa0323/go-orders-graphql-api/graph/model"
@@ -42,6 +42,28 @@ func initDB() *gorm.DB {
 	return db
 }
 
+// Defining the Graphql handler
+func graphqlHandler() gin.HandlerFunc {
+	// NewExecutableSchema and Config are in the generated.go file
+	// Resolver is in the resolver.go file
+	h := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
+		DB: db,
+	}}))
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
+}
+
+// Defining the Playground handler
+func playgroundHandler() gin.HandlerFunc {
+	h := playground.Handler("GraphQL", "/query")
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
+}
+
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -50,15 +72,20 @@ func main() {
 
 	initDB()
 
-	//log.Fatal(db)
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{
-		Resolvers: &graph.Resolver{
-			DB: db,
-		}}))
+	// srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{
+	// 	Resolvers: &graph.Resolver{
+	// 		DB: db,
+	// 	}}))
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	// http.Handle("/", playground.Handler("Query playground", "/query"))
+	// http.Handle("/query", srv)
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	// log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	// log.Fatal(http.ListenAndServe(":"+port, nil))
+	// // router.Run(":" + defaultPort)
+
+	r := gin.Default()
+	r.POST("/query", graphqlHandler())
+	r.GET("/", playgroundHandler())
+	r.Run(":" + defaultPort)
 }

@@ -55,4 +55,6 @@ models:
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32
   Item:
-    model: model.Item
+    model: github.com/yangwawa0323/go-orders-graphql-api/model.Item
+  Order:
+    model: github.com/yangwawa0323/go-orders-graphql-api/model.Order
