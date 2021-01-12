@@ -64,7 +64,8 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Orders func(childComplexity int) int
+		GetOrders func(childComplexity int, orderID int) int
+		Orders    func(childComplexity int) int
 	}
 }
 
@@ -75,6 +76,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Orders(ctx context.Context) ([]*model.Order, error)
+	GetOrders(ctx context.Context, orderID int) (*model.Order, error)
 }
 
 type executableSchema struct {
@@ -184,6 +186,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Order.OrderAmount(childComplexity), true
 
+	case "Query.getOrders":
+		if e.complexity.Query.GetOrders == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getOrders_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetOrders(childComplexity, args["orderID"].(int)), true
+
 	case "Query.orders":
 		if e.complexity.Query.Orders == nil {
 			break
@@ -290,7 +304,9 @@ type Mutation {
 
 type Query {
     orders: [Order!]!
-}`, BuiltIn: false},
+    getOrders(orderID: Int!): Order
+}
+`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -364,6 +380,21 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getOrders_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["orderID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderID"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderID"] = arg0
 	return args, nil
 }
 
@@ -844,6 +875,45 @@ func (ec *executionContext) _Query_orders(ctx context.Context, field graphql.Col
 	res := resTmp.([]*model.Order)
 	fc.Result = res
 	return ec.marshalNOrder2ᚕᚖgithubᚗcomᚋyangwawa0323ᚋgoᚑordersᚑgraphqlᚑapiᚋgraphᚋmodelᚐOrderᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_getOrders(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_getOrders_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetOrders(rctx, args["orderID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Order)
+	fc.Result = res
+	return ec.marshalOOrder2ᚖgithubᚗcomᚋyangwawa0323ᚋgoᚑordersᚑgraphqlᚑapiᚋgraphᚋmodelᚐOrder(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2246,6 +2316,17 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
+		case "getOrders":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getOrders(ctx, field)
+				return res
+			})
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
@@ -2961,6 +3042,13 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 		return graphql.Null
 	}
 	return graphql.MarshalInt(*v)
+}
+
+func (ec *executionContext) marshalOOrder2ᚖgithubᚗcomᚋyangwawa0323ᚋgoᚑordersᚑgraphqlᚑapiᚋgraphᚋmodelᚐOrder(ctx context.Context, sel ast.SelectionSet, v *model.Order) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Order(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

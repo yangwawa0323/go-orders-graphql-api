@@ -170,5 +170,7 @@ gorm.io/gorm v1.20.7 h1:rMS4CL3pNmYq1V5/X+nHHjh1Dx6dnf27+Cai5zabo+M=
 gorm.io/gorm v1.20.7/go.mod h1:0HFTzE/SqkGTzK6TlDPPQbAYCluiVvhzoA1+aVyzenw=
 gorm.io/gorm v1.20.8 h1:iToaOdZgjNvlc44NFkxfLa3U9q63qwaxt0FdNCiwOMs=
 gorm.io/gorm v1.20.8/go.mod h1:0HFTzE/SqkGTzK6TlDPPQbAYCluiVvhzoA1+aVyzenw=
+gorm.io/gorm v1.20.11 h1:jYHQ0LLUViV85V8dM1TP9VBBkfzKTnuTXDjYObkI6yc=
+gorm.io/gorm v1.20.11/go.mod h1:0HFTzE/SqkGTzK6TlDPPQbAYCluiVvhzoA1+aVyzenw=
 sourcegraph.com/sourcegraph/appdash v0.0.0-20180110180208-2cc67fd64755/go.mod h1:hI742Nqp5OhwiqlzhgfbWU4mW4yO10fP+LoT9WOswdU=
 sourcegraph.com/sourcegraph/appdash-data v0.0.0-20151005221446-73f23eafcf67/go.mod h1:L5q+DGLGOQFpo1snNEkLOJT2d1YTW66rWNzatr3He1k=

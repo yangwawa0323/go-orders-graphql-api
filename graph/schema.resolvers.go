@@ -5,6 +5,9 @@ package graph
 
 import (
 	"context"
+	"fmt"
+
+	// "fmt"
 
 	"github.com/yangwawa0323/go-orders-graphql-api/graph/generated"
 	"github.com/yangwawa0323/go-orders-graphql-api/graph/model"
@@ -57,6 +60,17 @@ func (r *queryResolver) Orders(ctx context.Context) ([]*model.Order, error) {
 		return nil, err
 	}
 	return orders, nil
+}
+
+func (r *queryResolver) GetOrders(ctx context.Context, orderID int) (*model.Order, error) {
+	var order model.Order = model.Order{}
+	err := r.DB.Preload("Items").First(&order, "id = ?", orderID).Error
+	if err != nil {
+		return nil, err
+	}
+	fmt.Errorf("order is: %V", order)
+	return &order, nil
+
 }
 
 // Mutation returns generated.MutationResolver implementation.

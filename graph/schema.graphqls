@@ -33,4 +33,5 @@ type Mutation {
 
 type Query {
     orders: [Order!]!
+    getOrders(orderID: Int!): Order
 }
