@@ -86,10 +86,10 @@ func main() {
 
 	r.LoadHTMLGlob("templates/*")
 
-	r.POST("/query", handlers.GraphqlHandler(db))
+	r.POST("/api/v1/", handlers.GraphqlHandler(db))
 	r.GET("/", handlers.PlaygroundHandler())
 
-	r.GET("/js", func(c *gin.Context) {
+	r.GET("/js/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "js.html", nil)
 	})
 

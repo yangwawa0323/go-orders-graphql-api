@@ -24,7 +24,7 @@ func GraphqlHandler(db *gorm.DB) gin.HandlerFunc {
 
 // Defining the Playground handler
 func PlaygroundHandler() gin.HandlerFunc {
-	h := playground.Handler("GraphQL", "/query")
+	h := playground.Handler("GraphQL", "/api/v1/")
 
 	return func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)

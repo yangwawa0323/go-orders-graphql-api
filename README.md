@@ -528,3 +528,75 @@ mutation deleteOrder ($orderId: Int!) {
 ```
 
   
+## Javascript客户端的访问
+
+使用 GrapheQL 最大的好处体现在客户端的调用
+
+```javascript
+
+        var customerName = 'yangkun'
+        var productCode = '2023'
+        var quantity = 8.0, orderAmount = 9.9
+        var productName = 'IBM x61 notebook pc'
+        var input = {
+            customerName,
+            orderAmount,
+            "items": [
+                {
+                    productCode,
+                    productName,
+                    quantity
+                }
+            ]
+        }
+        var query = `mutation createOrder ($input: OrderInput!) {
+  createOrder(input: $input) {
+    customerName
+    items {
+      productCode
+      productName
+      quantity
+    }
+  }
+}`
+
+        fetch('/query', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                query,
+                variables: { input },
+            })
+        })
+
+
+
+        fetch('/query', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                query: `query orders {
+    orders {
+      id  
+      customerName
+      items {
+        productName
+        quantity
+      }
+    }
+  }`
+            })
+        })
+            .then(r => r.json())
+            .then(data => console.log('data returned:', data));
+
+```
+
+
+将之前的 `queru` 或者 `mutation` 语句通过 **POST** 方式发送JSON数据给统一的后端地址,并且通过 **promise** 函数格式取回结果.
