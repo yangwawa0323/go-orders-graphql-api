@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +22,7 @@ var db *gorm.DB
 
 func initDB() *gorm.DB {
 	var err error
-	dataSourceName := "root:redhat@tcp(localhost:3306)/?parseTime=True"
+	dataSourceName := "root:redhat@tcp(localhost:3306)/" + dbName + "?parseTime=True"
 	//db, err = gorm.Open("mysql", dataSourceName)
 	db, err = gorm.Open(mysql.Open(dataSourceName), &gorm.Config{})
 	if err != nil {
@@ -82,7 +83,18 @@ func main() {
 	// // router.Run(":" + defaultPort)
 
 	r := gin.Default()
+
+	r.LoadHTMLGlob("templates/*")
+
 	r.POST("/query", handlers.GraphqlHandler(db))
 	r.GET("/", handlers.PlaygroundHandler())
+
+	r.GET("/js", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "js.html", nil)
+	})
+
+	// Router must load before gin.Engine is running
+
 	r.Run(":" + defaultPort)
+
 }
